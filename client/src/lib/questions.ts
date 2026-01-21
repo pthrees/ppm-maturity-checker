@@ -102,4 +102,16 @@ export const QUESTIONS: Question[] = [
   },
 ];
 
-export const TOTAL_STEPS = QUESTIONS.length;
+export interface CompanySizeOption {
+  id: string;
+  label: string;
+  range: { min: number; max: number | null };
+}
+
+export const COMPANY_SIZE_OPTIONS: CompanySizeOption[] = [
+  { id: "S1", label: "個人 / 〜10名", range: { min: 1, max: 10 } },
+  { id: "S2", label: "11〜30名", range: { min: 11, max: 30 } },
+  { id: "S3", label: "31〜100名", range: { min: 31, max: 100 } },
+  { id: "S4", label: "101〜300名", range: { min: 101, max: 300 } },
+  { id: "S5", label: "301名以上", range: { min: 301, max: null } },
+];

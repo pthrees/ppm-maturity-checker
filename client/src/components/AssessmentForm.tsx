@@ -75,7 +75,7 @@ export default function AssessmentForm() {
         title: "診断完了",
         description: "結果ページへ移動します...",
       });
-      setLocation(`/result/${result.id}`);
+      setLocation(`/pre-result/${result.id}`);
     } catch (error) {
       toast({
         title: "エラーが発生しました",

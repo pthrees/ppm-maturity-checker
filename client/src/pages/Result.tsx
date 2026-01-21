@@ -6,7 +6,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, ReferenceLine, Label as RechartsLabel
 } from "recharts";
-import { Loader2, Share2, Printer, AlertTriangle, ArrowRight, Download, CheckCircle2 } from "lucide-react";
+import { Loader2, Share2, Printer, AlertTriangle, ArrowRight, Download, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -92,31 +92,62 @@ function analyzeAssessment(answers: Record<string, { maturity: number, importanc
 }
 
 // Feedback text generator based on priority category
-function getFeedback(category: CategoryKey) {
+function getFeedback(category: CategoryKey, sizeId?: string | null) {
+  const sizePrefixes: Record<string, string> = {
+    S1: "（〜10名規模では）",
+    S2: "（11〜30名規模では）",
+    S3: "（31〜100名規模では）",
+    S4: "（101〜300名規模では）",
+    S5: "（301名以上の規模では）",
+  };
+
+  const pitfallTexts: Record<string, string> = {
+    S1: "属人化と兼務が前提になり、問題が見えないまま拡大しやすい傾向にあります。仕組み化が遅れるほど、後からの標準化コストが増えるため注意が必要です。",
+    S2: "案件と人の増加で、PM/PLの“見えない負荷”が急増しやすい時期です。体制の当たり外れが収益性を左右しやすいのがこの規模の特徴です。",
+    S3: "部分最適が進み、全体の予実・稼働・品質がつながらなくなるフェーズです。炎上が“再現性をもって”起こり始めるため、組織的な対策が求められます。",
+    S4: "標準化不足がボトルネックになり、管理が破綻しやすい規模です。撤退判断の遅れが不採算を固定化しやすいため、明確な基準運用が不可欠です。",
+    S5: "意思決定とガバナンスが重くなり、現場の改善が進みにくい状況に陥りがちです。全社最適のリソース調整が難しく、投資判断が遅れるリスクが高まります。",
+  };
+
+  const categorySpecificOneLiner: Record<CategoryKey, string> = {
+    A: "負荷が見えない状態が続くと、離職と炎上が同時進行しやすくなります。",
+    B: "ミスマッチは品質だけでなく、ブランド毀損として回収不能な損失になり得ます。",
+    C: "不採算の“見逃し”が積み上がると、投資余力が消え、成長が止まります。",
+    D: "意思決定の遅れは、ガバナンスリスクとして後から大きなコストになります。",
+  };
+
+  const prefix = sizeId ? sizePrefixes[sizeId] : "";
+  const oneLiner = categorySpecificOneLiner[category];
+  const pitfall = sizeId ? pitfallTexts[sizeId] : "";
+
   switch(category) {
     case 'A':
       return {
         title: "「稼働の見える化」が最優先課題です",
-        text: "プロジェクト現場の状況が見えていないため、トラブルの予兆を掴めず、後手対応になりがちです。まずは正確な工数入力の定着と、予実乖離のモニタリングから始めましょう。",
-        actions: ["日次での工数入力を徹底する", "プロジェクト別の予実状況を週次で確認する会議を設ける"]
+        text: `${prefix}プロジェクト現場の状況が見えていないため、トラブルの予兆を掴めず、後手対応になりがちです。${oneLiner}まずは正確な工数入力の定着と、予実乖離のモニタリングから始めましょう。`,
+        actions: ["日次での工数入力を徹底する", "プロジェクト別の予実状況を週次で確認する会議を設ける"],
+        pitfall
       };
     case 'B':
       return {
         title: "「リソース配分の最適化」が急務です",
-        text: "特定のエース社員への依存や、スキルミスマッチによる生産性低下のリスクが高い状態です。スキルマップを整備し、脱属人化・標準化を進める必要があります。",
-        actions: ["主要メンバーのスキルマップを作成する", "要件定義や設計の標準ドキュメント（型）を整備する"]
+        text: `${prefix}特定のエース社員への依存や、スキルミスマッチによる生産性低下のリスクが高い状態です。${oneLiner}スキルマップを整備し、脱属人化・標準化を進める必要があります。`,
+        actions: ["主要メンバーのスキルマップを作成する", "要件定義や設計の標準ドキュメント（型）を整備する"],
+        pitfall
       };
     case 'C':
       return {
         title: "「収益管理の厳格化」が必要です",
-        text: "どんぶり勘定での受注や、赤字プロジェクトの垂れ流しが発生しやすい体質です。見積もりの根拠を明確にし、撤退基準などのガバナンスを強化しましょう。",
-        actions: ["見積もりの承認プロセスに基準を設ける", "赤字プロジェクトの撤退・縮小基準を明文化する"]
+        text: `${prefix}どんぶり勘定での受注や、赤字プロジェクトの垂れ流しが発生しやすい体質です。${oneLiner}見積もりの根拠を明確にし、撤退基準などのガバナンスを強化しましょう。`,
+        actions: ["見積もりの承認プロセスに基準を設ける", "赤字プロジェクトの撤退・縮小基準を明文化する"],
+        pitfall
       };
     case 'D':
       return {
         title: "「組織プロセスの標準化」を目指しましょう",
-        text: "場当たり的な対応が多く、組織としての学習効果が蓄積されていません。PMO機能の強化や、経営層へのレポーティングラインの整備など、仕組み作りが必要です。",
-        actions: ["PMO（またはそれに準ずる機能）を立ち上げる", "全プロジェクトの状況を俯瞰する経営ダッシュボードを構築する"]
+        text: `${prefix}場当たり的な対応が多く、組織としての学習効果が蓄積されていません。${oneLiner}仕組み作りが必要です。`,
+        actions: ["PMO（またはそれに準ずる機能）を立ち上げる", "全プロジェクトの状況を俯瞰する経営ダッシュボードを構築する"],
+        pitfall
       };
   }
 }
@@ -126,6 +157,8 @@ export default function Result() {
   const { data: assessment, isLoading, error } = useAssessment(params?.id ? parseInt(params.id) : null);
   const { toast } = useToast();
   
+  const sizeId = params?.id ? localStorage.getItem(`assessment_size_${params.id}`) : null;
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -153,7 +186,7 @@ export default function Result() {
   // --- Analysis ---
   const answers = assessment.answers as Record<string, { maturity: number, importance: number }>;
   const { priorityCategory, radarData, scatterData } = analyzeAssessment(answers);
-  const feedback = getFeedback(priorityCategory);
+  const feedback = getFeedback(priorityCategory, sizeId);
 
   const handlePrint = () => {
     window.print();
@@ -221,6 +254,16 @@ export default function Result() {
                 {feedback.text}
               </p>
               
+              <div className="bg-white/60 rounded-xl p-4 border border-blue-100 mb-4">
+                <h3 className="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-amber-600" />
+                  この規模で起こりやすい落とし穴
+                </h3>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  {feedback.pitfall}
+                </p>
+              </div>
+
               <div className="bg-white/60 rounded-xl p-4 border border-blue-100">
                 <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-green-600" />
