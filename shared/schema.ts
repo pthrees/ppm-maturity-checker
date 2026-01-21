@@ -29,6 +29,7 @@ export const createAssessmentRequestSchema = z.object({
   userInfo: z.object({
     companyName: z.string().optional(),
     role: z.string().optional(),
+    companySize: z.string().optional(),
   }).optional(),
 });
 

@@ -5,7 +5,8 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft, Check, AlertCircle } from "lucide-react";
 import { createAssessmentRequestSchema } from "@shared/schema";
-import { QUESTIONS, CATEGORIES } from "@/lib/questions";
+import { COMPANY_SIZE_OPTIONS } from "@/lib/questions";
+import { CheckCircle2 } from "lucide-react";
 import { useCreateAssessment } from "@/hooks/use-assessments";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -28,7 +29,7 @@ export default function AssessmentForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       answers: {},
-      userInfo: { companyName: "", role: "" }
+      userInfo: { companyName: "", role: "", companySize: "" }
     },
     mode: "onChange"
   });
@@ -71,9 +72,13 @@ export default function AssessmentForm() {
   const onSubmit = async (data: FormValues) => {
     try {
       const result = await createAssessment.mutateAsync(data);
+      // Store company size for the result page
+      if (data.userInfo?.companySize) {
+        localStorage.setItem(`assessment_size_${result.id}`, data.userInfo.companySize);
+      }
       toast({
         title: "診断完了",
-        description: "結果ページへ移動します...",
+        description: "分析を開始します...",
       });
       setLocation(`/pre-result/${result.id}`);
     } catch (error) {
@@ -212,11 +217,44 @@ export default function AssessmentForm() {
 
                  <div className="space-y-6 max-w-md mx-auto w-full flex-1">
                    <div>
+                     <Label className="text-sm font-bold text-slate-700 mb-3 block">
+                       従業員規模（目安）
+                     </Label>
+                     <RadioGroup
+                       onValueChange={(val) => form.setValue("userInfo.companySize", val)}
+                       value={form.watch("userInfo.companySize")}
+                       className="grid grid-cols-1 gap-2"
+                     >
+                       {COMPANY_SIZE_OPTIONS.map((option) => (
+                         <div key={option.id}>
+                           <RadioGroupItem
+                             value={option.id}
+                             id={option.id}
+                             className="peer sr-only"
+                           />
+                           <Label
+                             htmlFor={option.id}
+                             className="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-white peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-blue-50 hover:bg-slate-50 cursor-pointer transition-all text-sm"
+                           >
+                             <span className="font-medium text-slate-900">{option.label}</span>
+                             {form.watch("userInfo.companySize") === option.id && (
+                               <CheckCircle2 className="w-4 h-4 text-primary" />
+                             )}
+                           </Label>
+                         </div>
+                       ))}
+                     </RadioGroup>
+                     <p className="text-[10px] text-slate-400 mt-2 text-center">
+                       ※診断精度を高めるために使用します。個人情報の入力は不要です。
+                     </p>
+                   </div>
+
+                   <div className="pt-4 border-t border-slate-100">
                      <Label htmlFor="company">会社名（任意）</Label>
                      <input
                        id="company"
                        {...form.register("userInfo.companyName")}
-                       className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1.5"
+                       className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                        placeholder="株式会社〇〇"
                      />
                    </div>
@@ -225,7 +263,7 @@ export default function AssessmentForm() {
                      <input
                        id="role"
                        {...form.register("userInfo.role")}
-                       className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1.5"
+                       className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                        placeholder="PM、マネージャー、経営企画など"
                      />
                    </div>
