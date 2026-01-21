@@ -36,19 +36,28 @@ export default function AssessmentForm() {
   const currentQuestion = QUESTIONS[currentStep];
   const isLastStep = currentStep === QUESTIONS.length;
   const progress = ((currentStep) / QUESTIONS.length) * 100;
+  const progressText = `${Math.min(100, Math.round(progress))}% (${currentStep}/${QUESTIONS.length})`;
 
   const handleNext = async () => {
     const qId = currentQuestion.id;
     const currentAnswer = form.getValues(`answers.${qId}`);
     
-    // Basic validation for current step
-    if (currentAnswer?.maturity === undefined || currentAnswer?.importance === undefined) {
+    // Ensure maturity is initialized to 0 if not set, instead of showing error
+    const maturity = currentAnswer?.maturity ?? 0;
+    const importance = currentAnswer?.importance;
+    
+    if (importance === undefined) {
       toast({
-        title: "未入力の項目があります",
-        description: "成熟度と重要度の両方を選択してください。",
+        title: "重要度が未入力です",
+        description: "経営上の重要度を選択してください。",
         variant: "destructive",
       });
       return;
+    }
+
+    // Set maturity to 0 if it was undefined (to prevent "missing input" error)
+    if (currentAnswer?.maturity === undefined) {
+      form.setValue(`answers.${qId}.maturity`, 0);
     }
     
     setCurrentStep(prev => prev + 1);
@@ -82,7 +91,7 @@ export default function AssessmentForm() {
       <div className="mb-8">
         <div className="flex justify-between text-sm font-medium text-muted-foreground mb-2">
           <span>進捗状況</span>
-          <span>{Math.round(progress)}%</span>
+          <span>{progressText}</span>
         </div>
         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
           <motion.div 
