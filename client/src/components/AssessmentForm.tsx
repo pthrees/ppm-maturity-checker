@@ -118,7 +118,7 @@ export default function AssessmentForm() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="p-8 md:p-12"
+                className="p-6 md:p-12 pb-32 md:pb-12"
               >
                 {/* Category Badge */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wider mb-6">
@@ -126,14 +126,14 @@ export default function AssessmentForm() {
                   カテゴリー {currentQuestion.category}: {CATEGORIES[currentQuestion.category].name}
                 </div>
 
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 font-display">
+                <h2 className="text-xl md:text-3xl font-bold text-slate-900 mb-3 md:mb-4 font-display">
                   Q{currentStep + 1}. {currentQuestion.text}
                 </h2>
-                <p className="text-slate-600 text-lg mb-12 leading-relaxed">
+                <p className="text-slate-600 text-base md:text-lg mb-8 md:mb-12 leading-relaxed">
                   {currentQuestion.description}
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-12">
+                <div className="grid md:grid-cols-2 gap-8 md:gap-12">
                   {/* Maturity Input */}
                   <div className="space-y-6">
                     <div className="flex justify-between items-end mb-2">
@@ -180,17 +180,17 @@ export default function AssessmentForm() {
                     <RadioGroup 
                       onValueChange={(val) => form.setValue(`answers.${currentQuestion.id}.importance`, parseInt(val))}
                       value={form.watch(`answers.${currentQuestion.id}.importance`)?.toString()}
-                      className="grid grid-cols-3 gap-3"
+                      className="grid grid-cols-3 gap-2 md:gap-3"
                     >
                       {[1, 2, 3].map((val) => (
                         <div key={val}>
                           <RadioGroupItem value={val.toString()} id={`imp-${val}`} className="peer sr-only" />
                           <Label
                             htmlFor={`imp-${val}`}
-                            className="flex flex-col items-center justify-center h-24 rounded-xl border-2 border-slate-100 bg-slate-50 peer-data-[state=checked]:border-amber-500 peer-data-[state=checked]:bg-amber-50 hover:bg-white hover:border-slate-200 cursor-pointer transition-all"
+                            className="flex flex-col items-center justify-center h-20 md:h-24 rounded-xl border-2 border-slate-100 bg-slate-50 peer-data-[state=checked]:border-amber-500 peer-data-[state=checked]:bg-amber-50 hover:bg-white hover:border-slate-200 cursor-pointer transition-all"
                           >
-                            <span className="text-xl font-bold mb-1">{val}</span>
-                            <span className="text-xs text-center text-muted-foreground px-1">
+                            <span className="text-lg md:text-xl font-bold mb-0.5 md:mb-1">{val}</span>
+                            <span className="text-[10px] md:text-xs text-center text-muted-foreground px-1">
                               {val === 1 ? "低" : val === 2 ? "中" : "高"}
                             </span>
                           </Label>
