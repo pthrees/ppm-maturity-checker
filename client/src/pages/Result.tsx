@@ -7,10 +7,22 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, ReferenceLine, Label as RechartsLabel
 } from "recharts";
-import { Loader2, Share2, Printer, AlertTriangle, ArrowRight, Download, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, AlertTriangle, ArrowRight, CheckCircle2, AlertCircle, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { apiRequest } from "@/lib/queryClient";
 import { clsx } from "clsx";
 
 // --- Logic Helpers ---
@@ -157,8 +169,63 @@ export default function Result() {
   const [match, params] = useRoute("/result/:id");
   const { data: assessment, isLoading, error } = useAssessment(params?.id ? parseInt(params.id) : null);
   const { toast } = useToast();
+  const [isSending, setIsSending] = (useEffect as any).useState?.(false) ?? [false, () => {}]; // Placeholder if not in component, but we are
+  // Re-define state since we're inside the component
+  const [email, setEmail] = (useEffect as any).useState?.("") ?? ["", () => {}];
+  const [name, setName] = (useEffect as any).useState?.("") ?? ["", () => {}];
+  const [isDialogOpen, setIsDialogOpen] = (useEffect as any).useState?.(false) ?? [false, () => {}];
   
-  const sizeId = params?.id ? localStorage.getItem(`assessment_size_${params.id}`) : null;
+  // State for email dialog
+  const [email, setEmail] = (useState as any)("");
+  const [name, setName] = (useState as any)("");
+  const [isSending, setIsSending] = (useState as any)(false);
+  const [isDialogOpen, setIsDialogOpen] = (useState as any)(false);
+
+  const handleSendEmail = async () => {
+    if (!email) return;
+    setIsSending(true);
+    try {
+      // Get the HTML content of the main element
+      const content = document.querySelector('main')?.innerHTML || "";
+      const styles = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML).join('\n');
+      
+      await apiRequest("POST", "/api/send-report", {
+        email,
+        name,
+        assessmentId: params?.id,
+        htmlContent: `
+          <html>
+            <head>
+              <style>${styles}</style>
+              <style>
+                body { font-family: sans-serif; }
+                .print\\:hidden { display: none !important; }
+              </style>
+            </head>
+            <body>
+              <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+                ${content}
+              </div>
+            </body>
+          </html>
+        `
+      });
+      
+      toast({
+        title: "送信完了",
+        description: "診断レポートをメールで送信しました。",
+      });
+      setIsDialogOpen(false);
+    } catch (err) {
+      toast({
+        title: "送信エラー",
+        description: "メールの送信に失敗しました。時間をおいて再度お試しください。",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -210,14 +277,64 @@ export default function Result() {
             診断結果レポート
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-2" />
-              共有
-            </Button>
-            <Button variant="default" size="sm" onClick={handlePrint}>
-              <Printer className="w-4 h-4 mr-2" />
-              PDF/印刷
-            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90">
+                  <Mail className="w-4 h-4 mr-2" />
+                  結果を転送
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>診断レポートの転送</DialogTitle>
+                  <DialogDescription>
+                    診断結果をメールで送信します。
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">お名前（任意）</Label>
+                    <Input
+                      id="name"
+                      placeholder="山田 太郎"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">メールアドレス（必須）</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="example@company.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button 
+                    type="submit" 
+                    onClick={handleSendEmail} 
+                    disabled={isSending || !email}
+                    className="w-full"
+                  >
+                    {isSending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        送信中...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        メールを送信する
+                      </>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>

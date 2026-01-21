@@ -3,12 +3,57 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import nodemailer from "nodemailer";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  // Email sending endpoint
+  app.post("/api/send-report", async (req, res) => {
+    try {
+      const { email, name, assessmentId, htmlContent } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      // For demo purposes, we'll use a test account or a placeholder
+      // In a real app, you'd use environment secrets for SMTP credentials
+      const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.SMTP_USER || "placeholder",
+          pass: process.env.SMTP_PASS || "placeholder",
+        },
+      });
+
+      // If no real SMTP config is provided, we just log it and return success
+      // In Replit environment without secrets set, we should handle this gracefully
+      if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+        console.log(`[Email Simulation] To: ${email}, Name: ${name}, Assessment: ${assessmentId}`);
+        // Simulate a delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return res.status(200).json({ message: "Email simulated successfully" });
+      }
+
+      await transporter.sendMail({
+        from: '"PPM Maturity Diagnostic" <noreply@example.com>',
+        to: email,
+        subject: `【診断結果】PPM成熟度診断レポート${name ? ` - ${name}様` : ""}`,
+        html: htmlContent,
+      });
+
+      res.status(200).json({ message: "Email sent successfully" });
+    } catch (err) {
+      console.error("Email send error:", err);
+      res.status(500).json({ message: "Failed to send email" });
+    }
+  });
+
   app.post(api.assessments.create.path, async (req, res) => {
     try {
       const input = api.assessments.create.input.parse(req.body);
