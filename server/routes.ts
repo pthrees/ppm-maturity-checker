@@ -26,8 +26,8 @@ export async function registerRoutes(
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-          user: process.env.SMTP_USER || "placeholder",
-          pass: process.env.SMTP_PASS || "placeholder",
+          user: (process.env as any).SMTP_USER || "placeholder",
+          pass: (process.env as any).SMTP_PASS || "placeholder",
         },
       });
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useAssessment } from "@/hooks/use-assessments";
 import { CategoryKey } from "@shared/schema";
@@ -169,17 +169,12 @@ export default function Result() {
   const [match, params] = useRoute("/result/:id");
   const { data: assessment, isLoading, error } = useAssessment(params?.id ? parseInt(params.id) : null);
   const { toast } = useToast();
-  const [isSending, setIsSending] = (useEffect as any).useState?.(false) ?? [false, () => {}]; // Placeholder if not in component, but we are
-  // Re-define state since we're inside the component
-  const [email, setEmail] = (useEffect as any).useState?.("") ?? ["", () => {}];
-  const [name, setName] = (useEffect as any).useState?.("") ?? ["", () => {}];
-  const [isDialogOpen, setIsDialogOpen] = (useEffect as any).useState?.(false) ?? [false, () => {}];
   
   // State for email dialog
-  const [email, setEmail] = (useState as any)("");
-  const [name, setName] = (useState as any)("");
-  const [isSending, setIsSending] = (useState as any)(false);
-  const [isDialogOpen, setIsDialogOpen] = (useState as any)(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSendEmail = async () => {
     if (!email) return;
@@ -252,6 +247,7 @@ export default function Result() {
   }
 
   // --- Analysis ---
+  const sizeId = params?.id ? localStorage.getItem(`assessment_size_${params.id}`) : null;
   const answers = assessment.answers as Record<string, { maturity: number, importance: number }>;
   const { priorityCategory, radarData, scatterData } = analyzeAssessment(answers);
   const feedback = getFeedback(priorityCategory, sizeId);
