@@ -5,7 +5,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft, Check, AlertCircle } from "lucide-react";
 import { createAssessmentRequestSchema } from "@shared/schema";
-import { COMPANY_SIZE_OPTIONS } from "@/lib/questions";
+import { QUESTIONS, CATEGORIES, COMPANY_SIZE_OPTIONS } from "@/lib/questions";
 import { CheckCircle2 } from "lucide-react";
 import { useCreateAssessment } from "@/hooks/use-assessments";
 import { useToast } from "@/hooks/use-toast";

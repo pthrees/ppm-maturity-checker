@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useAssessment } from "@/hooks/use-assessments";
-import { QUESTIONS, CATEGORIES, CategoryKey, Question } from "@/lib/questions";
+import { CategoryKey } from "@shared/schema";
+import { QUESTIONS, CATEGORIES, CategoryDef } from "@/lib/questions";
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, ReferenceLine, Label as RechartsLabel
@@ -74,14 +75,14 @@ function analyzeAssessment(answers: Record<string, { maturity: number, importanc
     // Scatter plot data point (Category average)
     scatterData.push({
       id: k,
-      name: CATEGORIES[k].name,
+      name: (CATEGORIES as any)[k].name,
       x: parseFloat(avgMaturity.toFixed(2)),
       y: parseFloat(avgImportance.toFixed(2)),
       z: 1, // Size
     });
 
     return {
-      category: CATEGORIES[k].name,
+      category: (CATEGORIES as any)[k].name,
       current: parseFloat(avgMaturity.toFixed(2)),
       ideal: 3, // Always 3
       fullMark: 3,
@@ -314,9 +315,9 @@ export default function Result() {
                   {/* Danger Zone: High Importance (1.5-3), Low Maturity (0-1.5) */}
                   <ReferenceArea x1={0} x2={1.5} y1={1.5} y2={3} fill="rgba(255, 0, 0, 0.05)" stroke="none" />
                   
-                  <Scatter name="Categories" data={scatterData} fill="#3b82f6" shape="circle">
+                  <Scatter name="Categories" data={scatterData} fill="#3b82f6">
                     {scatterData.map((entry, index) => (
-                       <cell key={`cell-${index}`} fill={entry.id === priorityCategory ? '#ef4444' : '#3b82f6'} />
+                       <circle key={`cell-${index}`} cx={0} cy={0} r={6} fill={entry.id === priorityCategory ? '#ef4444' : '#3b82f6'} />
                     ))}
                   </Scatter>
                 </ScatterChart>
