@@ -22,16 +22,13 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Email is required" });
       }
 
-      // Save email to database if assessmentId is provided
+      // Save email to database immediately before attempting to send
       if (assessmentId) {
         const id = parseInt(assessmentId);
         if (!isNaN(id)) {
-          const assessment = await storage.getAssessment(id);
-          if (assessment) {
-            await db.update(assessments)
-              .set({ email })
-              .where(eq(assessments.id, id));
-          }
+          await db.update(assessments)
+            .set({ email })
+            .where(eq(assessments.id, id));
         }
       }
 
