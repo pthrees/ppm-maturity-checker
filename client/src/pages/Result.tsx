@@ -5,7 +5,8 @@ import { CategoryKey } from "@shared/schema";
 import { QUESTIONS, CATEGORIES, CategoryDef } from "@/lib/questions";
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
-  ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, ReferenceLine, Label as RechartsLabel
+  ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, ReferenceLine, Label as RechartsLabel,
+  Cell, Legend
 } from "recharts";
 import { Loader2, AlertTriangle, ArrowRight, CheckCircle2, AlertCircle, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -252,6 +253,14 @@ export default function Result() {
   const { priorityCategory, radarData, scatterData } = analyzeAssessment(answers);
   const feedback = getFeedback(priorityCategory, sizeId);
 
+  // Category colors for chart
+  const categoryColors: Record<CategoryKey, string> = {
+    A: "#3b82f6", // Blue
+    B: "#10b981", // Green
+    C: "#f59e0b", // Amber
+    D: "#8b5cf6", // Violet
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -406,11 +415,11 @@ export default function Result() {
           <Card className="p-6 shadow-md print-shadow-none flex flex-col items-center">
             <div className="w-full mb-4">
                <h3 className="text-lg font-bold text-slate-900">ポートフォリオ分析 (重要度 × 成熟度)</h3>
-               <p className="text-xs text-slate-500">右上にいくほど健全。左上（重要度高・成熟度低）が危険領域。</p>
+               <p className="text-xs text-slate-500">右上にいくほど健全。左上（重要度高・成熟度低）が優先改善領域。</p>
             </div>
-            <div className="w-full h-[350px] relative">
+            <div className="w-full h-[380px] relative">
               <ResponsiveContainer width="100%" height="100%">
-                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     type="number" 
@@ -418,7 +427,7 @@ export default function Result() {
                     name="成熟度" 
                     domain={[0, 3]} 
                     tickCount={4}
-                    label={{ value: '成熟度 (Maturity)', position: 'bottom', offset: 0 }} 
+                    label={{ value: '成熟度 (Maturity)', position: 'bottom', offset: 20 }} 
                   />
                   <YAxis 
                     type="number" 
@@ -426,23 +435,27 @@ export default function Result() {
                     name="重要度" 
                     domain={[0, 3]} 
                     tickCount={4}
-                    label={{ value: '重要度 (Importance)', angle: -90, position: 'left' }} 
+                    label={{ value: '重要度 (Importance)', angle: -90, position: 'insideLeft', offset: 0 }} 
                   />
                   <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                  <Legend verticalAlign="top" height={36}/>
                   
                   {/* Danger Zone: High Importance (1.5-3), Low Maturity (0-1.5) */}
                   <ReferenceArea x1={0} x2={1.5} y1={1.5} y2={3} fill="rgba(255, 0, 0, 0.05)" stroke="none" />
                   
-                  <Scatter name="Categories" data={scatterData} fill="#3b82f6">
-                    {scatterData.map((entry, index) => (
-                       <circle key={`cell-${index}`} cx={0} cy={0} r={6} fill={entry.id === priorityCategory ? '#ef4444' : '#3b82f6'} />
-                    ))}
-                  </Scatter>
+                  {scatterData.map((entry, index) => (
+                    <Scatter 
+                      key={entry.id} 
+                      name={entry.name} 
+                      data={[entry]} 
+                      fill={categoryColors[entry.id as CategoryKey]} 
+                    />
+                  ))}
                 </ScatterChart>
               </ResponsiveContainer>
               {/* Labels for quadrants - absolutely positioned for better control */}
-              <div className="absolute top-4 left-12 text-xs font-bold text-red-500 bg-white/80 px-1">優先改善領域</div>
-              <div className="absolute top-4 right-4 text-xs font-bold text-green-600 bg-white/80 px-1">重点維持領域</div>
+              <div className="absolute top-16 left-12 text-[10px] font-bold text-red-500 bg-white/80 px-1 border border-red-100 rounded">優先改善</div>
+              <div className="absolute top-16 right-4 text-[10px] font-bold text-green-600 bg-white/80 px-1 border border-green-100 rounded">重点維持</div>
             </div>
           </Card>
 
