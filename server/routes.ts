@@ -1,3 +1,6 @@
+import { assessments, type InsertAssessment, type Assessment } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
@@ -17,6 +20,19 @@ export async function registerRoutes(
       
       if (!email) {
         return res.status(400).json({ message: "Email is required" });
+      }
+
+      // Save email to database if assessmentId is provided
+      if (assessmentId) {
+        const id = parseInt(assessmentId);
+        if (!isNaN(id)) {
+          const assessment = await storage.getAssessment(id);
+          if (assessment) {
+            await db.update(assessments)
+              .set({ email })
+              .where(eq(assessments.id, id));
+          }
+        }
       }
 
       // For demo purposes, we'll use a test account or a placeholder

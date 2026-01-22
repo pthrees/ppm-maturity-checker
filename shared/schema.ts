@@ -7,6 +7,7 @@ export const assessments = pgTable("assessments", {
   id: serial("id").primaryKey(),
   answers: jsonb("answers").notNull(), // Stores { [questionId]: { maturity: number, importance: number } }
   userInfo: jsonb("user_info"), // Optional: company name, role, etc.
+  email: text("email"), // Add email field
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -26,6 +27,7 @@ export const answerSchema = z.object({
 
 export const createAssessmentRequestSchema = z.object({
   answers: z.record(z.string(), answerSchema), // Key is question ID (e.g., "A1", "B2")
+  email: z.string().email("有効なメールアドレスを入力してください。").optional(),
   userInfo: z.object({
     companyName: z.string().optional(),
     role: z.string().optional(),
