@@ -269,8 +269,10 @@ export default function Result() {
       {/* Header - No print */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50 print:hidden">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="font-display font-bold text-xl text-slate-900">
-            診断結果レポート
+          <div className="flex items-center gap-2">
+            <div className="font-display font-bold text-xl text-slate-900">
+              P3 <span className="text-primary">PPM</span> Maturity Checker
+            </div>
           </div>
           <div className="flex gap-2">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -307,6 +309,9 @@ export default function Result() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
+                    <p className="text-[10px] text-slate-500 leading-relaxed mt-1">
+                      ご入力いただいたメールアドレスは、診断結果の送付および、当社サービス・事例に関するご案内 に利用させていただく場合があります。ご案内が不要な場合は、配信停止の手続きをいつでも行えます。
+                    </p>
                   </div>
                 </div>
                 <DialogFooter>
@@ -516,6 +521,20 @@ export default function Result() {
            </div>
         </div>
       </main>
+      
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-4 py-8 border-t border-slate-200">
+        <div className="flex justify-center">
+          <a 
+            href="https://www.canva.com/design/DAG72NAUfvg/ZJ_0WGacW76NZiKyHrKKOQ/view?utm_content=DAG72NAUfvg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h34a2f7e6c0" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-sm text-slate-500 hover:text-primary transition-colors underline underline-offset-4"
+          >
+            プライバシー・ポリシー
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

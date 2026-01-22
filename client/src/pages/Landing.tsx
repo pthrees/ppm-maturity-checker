@@ -13,11 +13,10 @@ export default function Landing() {
               <BarChart2 className="w-6 h-6 text-primary" />
             </div>
             <span className="font-display font-bold text-xl tracking-tight text-slate-900">
-              PPM Maturity<span className="text-primary">.ai</span>
+              P3 <span className="text-primary">PPM</span> Maturity Checker
             </span>
           </div>
           <nav className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
-            <a href="#about" className="hover:text-primary transition-colors">診断について</a>
             <a href="#features" className="hover:text-primary transition-colors">特徴</a>
           </nav>
         </div>
@@ -92,9 +91,19 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <BarChart2 className="w-5 h-5" />
-            <span className="font-bold text-white">PPM Maturity.ai</span>
+            <span className="font-bold text-white text-sm">P3 <span className="text-primary">PPM</span> Maturity Checker</span>
           </div>
-          <p className="text-sm">© 2024 PPM Diagnosis Tool. All rights reserved.</p>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <a 
+              href="https://www.canva.com/design/DAG72NAUfvg/ZJ_0WGacW76NZiKyHrKKOQ/view?utm_content=DAG72NAUfvg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h34a2f7e6c0" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs hover:text-white transition-colors underline underline-offset-4"
+            >
+              プライバシー・ポリシー
+            </a>
+            <p className="text-xs">© 2024 PPM Diagnosis Tool. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
