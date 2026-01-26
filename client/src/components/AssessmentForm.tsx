@@ -29,7 +29,7 @@ export default function AssessmentForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       answers: {},
-      userInfo: { companyName: "", role: "", companySize: "" }
+      userInfo: { companyName: "", role: "", companySize: "", name: "" }
     },
     mode: "onChange"
   });
@@ -265,6 +265,15 @@ export default function AssessmentForm() {
                        {...form.register("userInfo.role")}
                        className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                        placeholder="PM、マネージャー、経営企画など"
+                     />
+                   </div>
+                   <div>
+                     <Label htmlFor="name">氏名（任意）</Label>
+                     <input
+                       id="name"
+                       {...form.register("userInfo.name")}
+                       className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                       placeholder="山田 太郎"
                      />
                    </div>
                  </div>

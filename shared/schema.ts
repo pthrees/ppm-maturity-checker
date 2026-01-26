@@ -32,6 +32,7 @@ export const createAssessmentRequestSchema = z.object({
     companyName: z.string().optional(),
     role: z.string().optional(),
     companySize: z.string().optional(),
+    name: z.string().optional(),
   }).optional(),
 });
 

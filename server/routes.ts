@@ -107,7 +107,8 @@ export async function registerRoutes(
       
       <!-- User Info -->
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 24px;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">${data.companyName} 様</h2>
+        <h2 style="font-size: 20px; margin: 0 0 4px 0;">${data.userName}さん</h2>
+        ${data.companyName ? `<p style="color: #64748b; margin: 0 0 4px 0; font-size: 14px;">${data.companyName}</p>` : ''}
         <p style="color: #64748b; margin: 0; font-size: 14px;">診断日: ${data.diagnosisDate}</p>
       </div>
 

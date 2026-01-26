@@ -190,7 +190,8 @@ export default function Result() {
         assessmentId: params?.id,
         resultUrl,
         reportData: {
-          companyName: (assessment?.userInfo as any)?.companyName || "未設定",
+          userName: (assessment?.userInfo as any)?.name || "未入力",
+          companyName: (assessment?.userInfo as any)?.companyName || "",
           diagnosisDate: assessment?.createdAt ? new Date(assessment.createdAt).toLocaleDateString('ja-JP') : new Date().toLocaleDateString('ja-JP'),
           priorityTitle: feedback.title,
           priorityText: feedback.text,
@@ -345,7 +346,7 @@ export default function Result() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-slate-200 pb-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 mb-1">
-              {(assessment.userInfo as any)?.companyName || "未設定"} 様
+              {(assessment.userInfo as any)?.name || "未入力"}さん
             </h1>
             <p className="text-slate-500">
               診断日: {new Date(assessment.createdAt!).toLocaleDateString('ja-JP')}
