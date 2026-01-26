@@ -162,7 +162,7 @@ export async function registerRoutes(
         <p style="color: #64748b; font-size: 14px; margin: 0 0 16px 0;">
           グラフを含む詳細な診断結果はWebでご確認いただけます
         </p>
-        <a href="${resultUrl}" style="display: inline-block; background-color: #3b82f6; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-weight: 500; font-size: 14px;">
+        <a href="${resultUrl.replace(/^https?:\/\/[^\/]+/, 'https://checker.pthree.app')}" style="display: inline-block; background-color: #3b82f6; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-weight: 500; font-size: 14px;">
           詳細を見る →
         </a>
       </div>

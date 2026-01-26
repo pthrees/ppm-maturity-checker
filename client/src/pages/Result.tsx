@@ -299,15 +299,6 @@ export default function Result() {
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">お名前（任意）</Label>
-                    <Input
-                      id="name"
-                      placeholder="山田 太郎"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
                     <Label htmlFor="email">メールアドレス（必須）</Label>
                     <Input
                       id="email"
