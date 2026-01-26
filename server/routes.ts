@@ -36,9 +36,9 @@ export async function registerRoutes(
       const htmlContent = buildEmailTemplate(name, resultUrl, reportData);
 
       try {
-        const { client, fromEmail } = await getResendClient();
+        const { client } = await getResendClient();
         await client.emails.send({
-          from: fromEmail,
+          from: "P3 PPM Maturity Checker <hello@pthree.app>",
           to: email,
           subject: `【診断結果】P3 PPM Maturity Checker レポート${name ? ` - ${name}様` : ""}`,
           html: htmlContent,
