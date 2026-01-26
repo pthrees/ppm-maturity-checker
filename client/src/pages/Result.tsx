@@ -181,30 +181,29 @@ export default function Result() {
     if (!email) return;
     setIsSending(true);
     try {
-      // Get the HTML content of the main element
-      const content = document.querySelector('main')?.innerHTML || "";
-      const styles = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML).join('\n');
+      // Send structured data instead of raw HTML for better email compatibility
+      const resultUrl = window.location.href;
       
       await apiRequest("POST", "/api/send-report", {
         email,
         name,
         assessmentId: params?.id,
-        htmlContent: `
-          <html>
-            <head>
-              <style>${styles}</style>
-              <style>
-                body { font-family: sans-serif; }
-                .print\\:hidden { display: none !important; }
-              </style>
-            </head>
-            <body>
-              <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
-                ${content}
-              </div>
-            </body>
-          </html>
-        `
+        resultUrl,
+        reportData: {
+          companyName: (assessment?.userInfo as any)?.companyName || "未設定",
+          diagnosisDate: assessment?.createdAt ? new Date(assessment.createdAt).toLocaleDateString('ja-JP') : new Date().toLocaleDateString('ja-JP'),
+          priorityTitle: feedback.title,
+          priorityText: feedback.text,
+          pitfall: feedback.pitfall,
+          actions: feedback.actions,
+          categoryScores: radarData.map((row, idx) => ({
+            name: row.category,
+            maturity: row.current.toFixed(1),
+            importance: scatterData[idx].y.toFixed(1),
+            riskScore: ((3 - row.current) * scatterData[idx].y).toFixed(1),
+            status: row.current < 1.5 && scatterData[idx].y > 2 ? '危険' : row.current < 2 ? '注意' : '良好'
+          }))
+        }
       });
       
       toast({
