@@ -7,6 +7,15 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { getResendClient } from "./resend";
+import fs from "fs";
+import path from "path";
+
+const WHITEPAPER_MAP: Record<string, { filename: string; displayName: string }> = {
+  "A": { filename: "category-A.pdf", displayName: "PPM白書_工数管理.pdf" },
+  "B": { filename: "category-B.pdf", displayName: "PPM白書_リソース管理.pdf" },
+  "C": { filename: "category-C.pdf", displayName: "PPM白書_収益管理.pdf" },
+  "D": { filename: "category-D.pdf", displayName: "PPM白書_経営管理.pdf" },
+};
 
 export async function registerRoutes(
   httpServer: Server,
@@ -37,11 +46,30 @@ export async function registerRoutes(
 
       try {
         const { client } = await getResendClient();
+        
+        // Determine priority category and prepare PDF attachment
+        const priorityCategory = reportData?.priorityCategory as string | undefined;
+        const attachments: Array<{ filename: string; content: Buffer }> = [];
+        
+        if (priorityCategory && WHITEPAPER_MAP[priorityCategory]) {
+          const whitepaperInfo = WHITEPAPER_MAP[priorityCategory];
+          const pdfPath = path.join(process.cwd(), "server", "whitepapers", whitepaperInfo.filename);
+          
+          if (fs.existsSync(pdfPath)) {
+            const pdfBuffer = fs.readFileSync(pdfPath);
+            attachments.push({
+              filename: whitepaperInfo.displayName,
+              content: pdfBuffer,
+            });
+          }
+        }
+        
         await client.emails.send({
           from: "P3 PPM Maturity Checker <hello@pthree.app>",
           to: email,
           subject: `【診断結果】P3 PPM Maturity Checker レポート${name ? ` - ${name}様` : ""}`,
           html: htmlContent,
+          attachments: attachments.length > 0 ? attachments : undefined,
         });
 
         return res.status(200).json({ message: "Email sent successfully" });

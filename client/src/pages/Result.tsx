@@ -197,6 +197,7 @@ export default function Result() {
           priorityText: feedback.text,
           pitfall: feedback.pitfall,
           actions: feedback.actions,
+          priorityCategory: priorityCategory,
           categoryScores: radarData.map((row, idx) => ({
             name: row.category,
             maturity: row.current.toFixed(1),
