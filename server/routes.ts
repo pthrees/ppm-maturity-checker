@@ -158,7 +158,6 @@ export async function registerRoutes(
         ${data.priorityCategory && EMAIL_LEAD_TEXT[data.priorityCategory] ? `
         <p style="color: #475569; line-height: 1.8; margin: 0 0 12px 0; font-size: 14px; white-space: pre-line;">${EMAIL_LEAD_TEXT[data.priorityCategory]}</p>
         ` : ''}
-        ${data.companyName ? `<p style="color: #64748b; margin: 0 0 4px 0; font-size: 14px;">${data.companyName}</p>` : ''}
         <p style="color: #64748b; margin: 0; font-size: 14px;">診断日: ${data.diagnosisDate}</p>
       </div>
 
