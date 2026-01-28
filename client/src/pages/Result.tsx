@@ -315,7 +315,7 @@ export default function Result() {
           <div className="flex gap-2">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90">
+                <Button variant="default" size="sm" data-testid="button-header-email">
                   <Mail className="w-4 h-4 mr-2" />
                   結果を転送
                 </Button>
@@ -434,14 +434,13 @@ export default function Result() {
         <Card className="p-8 bg-gradient-to-br from-slate-50 to-white border border-slate-200 shadow-lg print-shadow-none">
           <div className="max-w-3xl mx-auto text-center">
             <div className="mb-6">
-              <p className="text-slate-700 leading-relaxed whitespace-pre-line text-left md:text-center">
+              <p className="text-slate-700 leading-relaxed whitespace-pre-line text-left md:text-center" data-testid="text-cta-lead">
                 {CTA_CONTENT[priorityCategory].leadText}
               </p>
             </div>
             <Button 
               size="lg"
               onClick={() => setIsDialogOpen(true)}
-              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white px-8 py-6 text-base h-auto shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:scale-[1.02]"
               data-testid="button-cta-download"
             >
               <Mail className="w-5 h-5 mr-3" />
