@@ -26,6 +26,34 @@ import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
 import { clsx } from "clsx";
 
+// CTA content by priority category
+const CTA_CONTENT: Record<CategoryKey, { leadText: string; buttonText: string }> = {
+  A: {
+    leadText: `生成AIで現場の効率が上がる一方で、忙しさと経営の手応えが噛み合わなくなるケースが増えています。
+工数管理は、現場管理ではなく経営判断のための情報になりつつあります。
+「AI時代を生き抜く処方箋」として、工数管理のポイントを整理した１ペーパースライドをご用意しましたので、視点整理にご活用ください。`,
+    buttonText: "生成AI時代の「次世代」工数管理ガイドラインを受け取る"
+  },
+  B: {
+    leadText: `生成AI時代では、人数や稼働量よりも「人とスキルをどのように組み合わせるか」が成果を左右します。
+リソース管理は、人事の話ではなく経営リスクの話になっています。
+「AI時代を生き抜く処方箋」として、スキル＆リソース管理のポイントを整理した１ペーパースライドをご用意しましたので、視点整理にご活用ください。`,
+    buttonText: "生成AI時代の「脱・属人化」のロードマップを受け取る"
+  },
+  C: {
+    leadText: `生成AIで生産性が上がるほど、受託ビジネスでは「どこで利益が生まれているか」が見えにくくなります。
+特に収益管理は、努力や稼働量ではなく、経営判断そのものが問われる領域です。
+「AI時代を生き抜く処方箋」として、収益管理のポイントを整理した１ペーパースライドをご用意しましたので、視点整理にご活用ください。`,
+    buttonText: "生成AI時代対応版「収益管理」ガイドラインを受け取る"
+  },
+  D: {
+    leadText: `生成AIで個別案件は回っていても、全体としての意思決定が重くなる企業が増えています。
+PPM成熟度は、管理レベルではなく経営の可視性の問題です。
+「AI時代を生き抜く処方箋」として、PPMと経営変革のロードマップについて整理した１ペーパースライドをご用意しましたので、視点整理にご活用ください。`,
+    buttonText: "生成AI時代の「経営管理変革」ロードマップを受け取る"
+  }
+};
+
 // --- Logic Helpers ---
 
 // Calculate risk score: (3 - Maturity) * Importance
@@ -399,6 +427,29 @@ export default function Result() {
                 </ul>
               </div>
             </div>
+          </div>
+        </Card>
+
+        {/* CTA Section - Dynamic based on priority category */}
+        <Card className="p-8 bg-gradient-to-br from-slate-50 to-white border border-slate-200 shadow-lg print-shadow-none">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="mb-6">
+              <p className="text-slate-700 leading-relaxed whitespace-pre-line text-left md:text-center">
+                {CTA_CONTENT[priorityCategory].leadText}
+              </p>
+            </div>
+            <Button 
+              size="lg"
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white px-8 py-6 text-base h-auto shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:scale-[1.02]"
+              data-testid="button-cta-download"
+            >
+              <Mail className="w-5 h-5 mr-3" />
+              {CTA_CONTENT[priorityCategory].buttonText}
+            </Button>
+            <p className="text-xs text-slate-400 mt-4">
+              ※メールアドレスをご入力いただくと、PDFをお送りします
+            </p>
           </div>
         </Card>
 
