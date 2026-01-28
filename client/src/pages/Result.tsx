@@ -442,7 +442,7 @@ export default function Result() {
               size="lg"
               onClick={() => setIsDialogOpen(true)}
               data-testid="button-cta-download"
-              className="bg-emerald-500 text-white text-2xl font-bold shadow-[0_6px_0_0_#059669] hover:shadow-[0_4px_0_0_#059669] hover:translate-y-[2px] active:shadow-[0_0_0_0_#059669] active:translate-y-[6px] transition-all"
+              className="bg-[#32CD32] text-white text-2xl font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_4px_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
             >
               <Mail className="w-6 h-6 mr-3" />
               {CTA_CONTENT[priorityCategory].buttonText}
