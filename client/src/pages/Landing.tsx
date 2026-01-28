@@ -102,7 +102,7 @@ export default function Landing() {
             >
               プライバシー・ポリシー
             </a>
-            <p className="text-xs">© 2024 PPM Diagnosis Tool. All rights reserved.</p>
+            <p className="text-xs">© 2026 P3 Strategic Partners Co., Ltd. All rights reserved.</p>
           </div>
         </div>
       </footer>

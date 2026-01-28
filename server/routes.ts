@@ -222,7 +222,7 @@ export async function registerRoutes(
     <!-- Footer -->
     <div style="text-align: center; margin-top: 32px; color: #94a3b8; font-size: 12px;">
       <p style="margin: 0;">P3 PPM Maturity Checker</p>
-      <p style="margin: 4px 0 0 0;">© 2024 PPM Diagnosis Tool. All rights reserved.</p>
+      <p style="margin: 4px 0 0 0;">© 2026 P3 Strategic Partners Co., Ltd. All rights reserved.</p>
     </div>
 
   </div>
