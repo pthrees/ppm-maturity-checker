@@ -17,6 +17,25 @@ const WHITEPAPER_MAP: Record<string, { filename: string; displayName: string }> 
   "D": { filename: "category-D.pdf", displayName: "PPM白書_経営管理.pdf" },
 };
 
+const EMAIL_LEAD_TEXT: Record<string, string> = {
+  "A": `生成AIで現場の効率が上がる一方で、忙しさと経営の手応えが噛み合わなくなるケースが増えています。
+工数管理は、現場管理ではなく経営判断のための情報になりつつあります。
+「AI時代を生き抜く処方箋」として、工数管理のポイントを整理したスライドを添付致します。
+視点整理にご活用ください。`,
+  "B": `生成AI時代では、人数や稼働量よりも「人とスキルをどのように組み合わせるか」が成果を左右します。
+リソース管理は、人事の話ではなく経営リスクの話になっています。
+「AI時代を生き抜く処方箋」として、スキル＆リソース管理のポイントを整理したスライドを添付致します。
+視点整理にご活用ください。`,
+  "C": `生成AIで生産性が上がるほど、受託ビジネスでは「どこで利益が生まれているか」が見えにくくなります。
+特に収益管理は、努力や稼働量ではなく、経営判断そのものが問われる領域です。
+「AI時代を生き抜く処方箋」として、収益管理のポイントを整理したスライドを添付致します。
+視点整理にご活用ください。`,
+  "D": `生成AIで個別案件は回っていても、全体としての意思決定が重くなる企業が増えています。
+PPM成熟度は、管理レベルではなく経営の可視性の問題です。
+「AI時代を生き抜く処方箋」として、PPMと経営変革のロードマップについて整理したスライドを添付致します。
+視点整理にご活用ください。`,
+};
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -135,7 +154,10 @@ export async function registerRoutes(
       
       <!-- User Info -->
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 24px;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">${data.userName}さん</h2>
+        <h2 style="font-size: 20px; margin: 0 0 12px 0;">${data.userName}さん</h2>
+        ${data.priorityCategory && EMAIL_LEAD_TEXT[data.priorityCategory] ? `
+        <p style="color: #475569; line-height: 1.8; margin: 0 0 12px 0; font-size: 14px; white-space: pre-line;">${EMAIL_LEAD_TEXT[data.priorityCategory]}</p>
+        ` : ''}
         ${data.companyName ? `<p style="color: #64748b; margin: 0 0 4px 0; font-size: 14px;">${data.companyName}</p>` : ''}
         <p style="color: #64748b; margin: 0; font-size: 14px;">診断日: ${data.diagnosisDate}</p>
       </div>
